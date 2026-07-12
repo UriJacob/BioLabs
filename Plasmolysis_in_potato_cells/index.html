@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>השפעת ריכוז תמיסת סוכרוז על נפח פרוסות תפוח אדמה</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js for the dynamic graph -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Rubik', sans-serif; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        /* Custom range slider styling */
+        input[type=range] {
+            -webkit-appearance: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: currentColor;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen p-2 md:p-6">
+
+    <div class="max-w-7xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
+        
+        <header class="bg-blue-700 text-white p-6 md:p-8 text-center relative overflow-hidden">
+            <div class="absolute top-0 right-0 opacity-10 pointer-events-none transform translate-x-1/4 -translate-y-1/4">
+                <i class="fa-solid fa-chart-line text-[250px]"></i>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-3 relative z-10">השפעת ריכוז תמיסת סוכרוז על נפח פרוסות תפוח אדמה</h1>
+            <p class="text-blue-100 text-lg relative z-10 max-w-2xl mx-auto">
+                סימולציה אינטראקטיבית המבוססת על בחינת הבגרות המעשית בביולוגיה (בעיה 4, שנת 2005)
+            </p>
+        </header>
+
+        <div class="flex flex-wrap border-b border-slate-200 bg-slate-50/50">
+            <button id="btn-partA" onclick="switchTab('partA')" class="tab-btn flex-1 min-w-[150px] flex items-center justify-center gap-2 py-4 px-2 text-sm font-semibold transition-colors duration-200 bg-white text-blue-700 border-b-2 border-blue-700 shadow-sm">
+                <i class="fa-solid fa-flask"></i> <span class="hidden sm:inline">שלב א': מומסים ושטח פנים</span>
+            </button>
+            <button id="btn-results" onclick="switchTab('results')" class="tab-btn flex-1 min-w-[150px] flex items-center justify-center gap-2 py-4 px-2 text-sm font-semibold transition-colors duration-200 text-slate-500 hover:text-slate-700 hover:bg-slate-100">
+                <i class="fa-solid fa-table"></i> <span class="hidden sm:inline">טבלאות תוצאות</span>
+            </button>
+            <button id="btn-partB" onclick="switchTab('partB')" class="tab-btn flex-1 min-w-[150px] flex items-center justify-center gap-2 py-4 px-2 text-sm font-semibold transition-colors duration-200 text-slate-500 hover:text-slate-700 hover:bg-slate-100">
+                <i class="fa-solid fa-chart-area"></i> <span class="hidden sm:inline">השפעת ריכוז על נפח הפרוסות</span>
+            </button>
+            <button id="btn-questions" onclick="switchTab('questions')" class="tab-btn flex-1 min-w-[150px] flex items-center justify-center gap-2 py-4 px-2 text-sm font-semibold transition-colors duration-200 text-slate-500 hover:text-slate-700 hover:bg-slate-100">
+                <i class="fa-solid fa-circle-question"></i> <span class="hidden sm:inline">שאלות חקר</span>
+            </button>
+            <button id="btn-conclusions" onclick="switchTab('conclusions')" class="tab-btn flex-1 min-w-[150px] flex items-center justify-center gap-2 py-4 px-2 text-sm font-semibold transition-colors duration-200 text-slate-500 hover:text-slate-700 hover:bg-slate-100">
+                <i class="fa-solid fa-file-lines"></i> <span class="hidden sm:inline">מסקנות וסיכום</span>
+            </button>
+        </div>
+
+        <main class="p-4 md:p-8">
+            <div id="partA" class="tab-content active bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h2 class="text-2xl font-bold mb-4 flex items-center text-slate-800">
+                    <i class="fa-solid fa-flask ml-2 text-blue-600"></i> שלב א': מומסים, שטח פנים ויציאת נוזלים
+                </h2>
+                <p class="text-slate-600 mb-6 text-sm">
+                    בשלב זה אנו בודקים כיצד סוג האבקה (סוכרוז לעומת עמילן) ושטח הפנים (32 פרוסות קטנות לעומת 8 פרוסות גדולות) משפיעים על כמות הנוזל היוצאת מרקמת תפוח האדמה לאורך זמן.
+                    <br/>הפעל את השעון או גרור את ציר הזמן ידנית כדי לראות מה קורה לאחר 5 ו-10 דקות.
+                </p>
+
+                <!-- Timer Controls -->
+                <div class="flex flex-col md:flex-row gap-6 mb-8 p-6 bg-slate-50 rounded-xl shadow-inner border border-slate-200 items-center justify-between">
+                    <div class="flex items-center gap-6">
+                        <div id="timerDisplay" class="bg-slate-800 text-emerald-400 font-mono text-4xl px-5 py-3 rounded-xl shadow-inner tracking-widest border-2 border-slate-700" dir="ltr">
+                            00:00
+                        </div>
+                        <div class="flex gap-3">
+                            <button onclick="startTimer()" class="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-md transition-all hover:scale-105 active:scale-95" title="הפעל שעון">
+                                <i class="fa-solid fa-play ml-1"></i>
+                            </button>
+                            <button onclick="pauseTimer()" class="bg-amber-500 hover:bg-amber-600 text-white p-3 rounded-full shadow-md transition-all hover:scale-105 active:scale-95" title="השהה">
+                                <i class="fa-solid fa-stop"></i>
+                            </button>
+                            <button onclick="resetTimer()" class="bg-slate-600 hover:bg-slate-700 text-white p-3 rounded-full shadow-md transition-all hover:scale-105 active:scale-95" title="אפס שעון">
+                                <i class="fa-solid fa-rotate-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="w-full md:w-1/2 mt-4 md:mt-0">
+                        <label class="block text-slate-700 font-semibold mb-2 text-sm flex justify-between">
+                            <span>שליטה ידנית בזמן:</span>
+                            <span id="timeLabel" class="text-blue-600 font-bold">0 דקות</span>
+                        </label>
+                        <input 
+                            type="range" min="0" max="10" step="1" value="0" id="timeSlider"
+                            oninput="handleTimeSlider(this.value)"
+                            class="w-full h-3 bg-blue-200 rounded-lg appearance-none cursor-pointer accent-blue-600 block text-blue-600"
+                            dir="ltr"
+                        />
+                        <div class="flex justify-between text-xs text-slate-500 mt-2 px-1 font-medium" dir="ltr">
+                            <span>0 דק'</span><span>5 דק'</span><span>10 דק'</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Test Tubes Container -->
+                <div class="flex flex-wrap gap-8 justify-center items-end" id="tubesContainer">
+                    <!-- Tube 1 -->
+                    <div class="flex flex-col items-center">
+                        <div class="text-center mb-4 bg-slate-50 px-4 py-2 rounded-lg border border-slate-100 shadow-sm min-w-[160px]">
+                            <h4 class="font-bold text-lg text-slate-800 border-b border-slate-200 pb-1 mb-2">מבחנה 1</h4>
+                            <p class="text-xs text-slate-600 font-medium mb-1">32 פרוסות קטנות</p>
+                            <p class="text-xs font-bold text-slate-500 bg-white inline-block px-2 py-1 rounded">+ סוכרוז</p>
+                        </div>
+                        <div class="relative bg-white rounded-2xl p-3 shadow-md border border-slate-200">
+                            <svg viewBox="0 0 100 230" class="w-36 h-72 overflow-visible">
+                                <path d="M 10 10 L 90 10 L 60 50 L 60 100 L 40 100 L 40 50 Z" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" stroke-linejoin="round" />
+                                <g transform="translate(22, 14)">
+                                    <rect x="0" y="0" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/><rect x="7" y="0" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/><rect x="14" y="0" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/><rect x="21" y="0" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/><rect x="28" y="0" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/><rect x="35" y="0" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/><rect x="42" y="0" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/><rect x="49" y="0" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/>
+                                    <rect x="0" y="7" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/><rect x="7" y="7" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/><rect x="14" y="7" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/><rect x="21" y="7" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/><rect x="28" y="7" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/><rect x="35" y="7" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/><rect x="42" y="7" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/><rect x="49" y="7" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/>
+                                    <rect x="0" y="14" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/><rect x="7" y="14" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/><rect x="14" y="14" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/><rect x="21" y="14" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/><rect x="28" y="14" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/><rect x="35" y="14" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/><rect x="42" y="14" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/><rect x="49" y="14" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/>
+                                    <rect x="0" y="21" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/><rect x="7" y="21" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/><rect x="14" y="21" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/><rect x="21" y="21" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/><rect x="28" y="21" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/><rect x="35" y="21" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/><rect x="42" y="21" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/><rect x="49" y="21" width="5" height="5" fill="#fde047" stroke="#b45309" stroke-width="0.5" rx="1"/>
+                                </g>
+                                <path id="tube1-powder" d="M 15 15 L 85 15 L 60 45 L 40 45 Z" fill="#ffffff" opacity="0.85" style="transition: opacity 0.5s ease;" />
+                                <path d="M 32 70 L 32 200 A 18 18 0 0 0 68 200 L 68 70" fill="none" stroke="#94a3b8" stroke-width="3" />
+                                <ellipse cx="50" cy="70" rx="18" ry="3" fill="none" stroke="#94a3b8" stroke-width="2" />
+                                <g class="transition-all duration-500 ease-linear">
+                                    <path id="tube1-fluid" d="" fill="rgba(59, 130, 246, 0.4)" style="display:none;" />
+                                    <ellipse id="tube1-surface" cx="50" cy="200" rx="16.5" ry="3" fill="rgba(59, 130, 246, 0.6)" style="display:none;" />
+                                </g>
+                                <circle id="tube1-drop" cx="50" cy="100" r="2.5" fill="#3b82f6" opacity="0.8" style="display:none;">
+                                    <animate attributeName="cy" values="100; 190; 100" keyTimes="0; 0.9; 1" dur="1.5s" repeatCount="indefinite" />
+                                    <animate attributeName="opacity" values="0; 0.8; 0" keyTimes="0; 0.1; 1" dur="1.5s" repeatCount="indefinite" />
+                                </circle>
+                            </svg>
+                            <div class="mt-4 flex flex-col gap-2 items-center">
+                                <span id="tube1-status" class="text-xs bg-slate-100 text-slate-700 px-2 py-1.5 rounded w-full text-center font-medium border border-slate-200 shadow-sm transition-colors">מצב אבקה: יבשה / לחה</span>
+                                <span id="tube1-fluid-label" class="text-sm font-bold px-3 py-2 rounded-lg w-full text-center shadow-sm transition-colors duration-500 bg-slate-100 text-slate-500 border border-slate-200">0 ס"מ נוזל</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tube 2 -->
+                    <div class="flex flex-col items-center">
+                        <div class="text-center mb-4 bg-slate-50 px-4 py-2 rounded-lg border border-slate-100 shadow-sm min-w-[160px]">
+                            <h4 class="font-bold text-lg text-slate-800 border-b border-slate-200 pb-1 mb-2">מבחנה 2</h4>
+                            <p class="text-xs text-slate-600 font-medium mb-1">8 פרוסות גדולות</p>
+                            <p class="text-xs font-bold text-slate-500 bg-white inline-block px-2 py-1 rounded">+ סוכרוז</p>
+                        </div>
+                        <div class="relative bg-white rounded-2xl p-3 shadow-md border border-slate-200">
+                            <svg viewBox="0 0 100 230" class="w-36 h-72 overflow-visible">
+                                <path d="M 10 10 L 90 10 L 60 50 L 60 100 L 40 100 L 40 50 Z" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" stroke-linejoin="round" />
+                                <g transform="translate(26, 14)">
+                                    <rect x="0" y="0" width="10" height="10" fill="#fde047" stroke="#b45309" stroke-width="1" rx="2"/><rect x="12" y="0" width="10" height="10" fill="#fde047" stroke="#b45309" stroke-width="1" rx="2"/><rect x="24" y="0" width="10" height="10" fill="#fde047" stroke="#b45309" stroke-width="1" rx="2"/><rect x="36" y="0" width="10" height="10" fill="#fde047" stroke="#b45309" stroke-width="1" rx="2"/>
+                                    <rect x="0" y="12" width="10" height="10" fill="#fde047" stroke="#b45309" stroke-width="1" rx="2"/><rect x="12" y="12" width="10" height="10" fill="#fde047" stroke="#b45309" stroke-width="1" rx="2"/><rect x="24" y="12" width="10" height="10" fill="#fde047" stroke="#b45309" stroke-width="1" rx="2"/><rect x="36" y="12" width="10" height="10" fill="#fde047" stroke="#b45309" stroke-width="1" rx="2"/>
+                                </g>
+                                <path id="tube2-powder" d="M 15 15 L 85 15 L 60 45 L 40 45 Z" fill="#ffffff" opacity="0.85" style="transition: opacity 0.5s ease;" />
+                                <path d="M 32 70 L 32 200 A 18 18 0 0 0 68 200 L 68 70" fill="none" stroke="#94a3b8" stroke-width="3" />
+                                <ellipse cx="50" cy="70" rx="18" ry="3" fill="none" stroke="#94a3b8" stroke-width="2" />
+                                <g class="transition-all duration-500 ease-linear">
+                                    <path id="tube2-fluid" d="" fill="rgba(59, 130, 246, 0.4)" style="display:none;" />
+                                    <ellipse id="tube2-surface" cx="50" cy="200" rx="16.5" ry="3" fill="rgba(59, 130, 246, 0.6)" style="display:none;" />
+                                </g>
+                                <circle id="tube2-drop" cx="50" cy="100" r="2.5" fill="#3b82f6" opacity="0.8" style="display:none;">
+                                    <animate attributeName="cy" values="100; 190; 100" keyTimes="0; 0.9; 1" dur="1.875s" repeatCount="indefinite" />
+                                    <animate attributeName="opacity" values="0; 0.8; 0" keyTimes="0; 0.1; 1" dur="1.875s" repeatCount="indefinite" />
+                                </circle>
+                            </svg>
+                            <div class="mt-4 flex flex-col gap-2 items-center">
+                                <span id="tube2-status" class="text-xs bg-slate-100 text-slate-700 px-2 py-1.5 rounded w-full text-center font-medium border border-slate-200 shadow-sm transition-colors">מצב אבקה: יבשה / לחה</span>
+                                <span id="tube2-fluid-label" class="text-sm font-bold px-3 py-2 rounded-lg w-full text-center shadow-sm transition-colors duration-500 bg-slate-100 text-slate-500 border border-slate-200">0 ס"מ נוזל</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tube 3 -->
+                    <div class="flex flex-col items-center">
+                        <div class="text-center mb-4 bg-slate-50 px-4 py-2 rounded-lg border border-slate-100 shadow-sm min-w-[160px]">
+                            <h4 class="font-bold text-lg text-slate-800 border-b border-slate-200 pb-1 mb-2">מבחנה 3</h4>
+                            <p class="text-xs text-slate-600 font-medium mb-1">8 פרוסות גדולות</p>
+                            <p class="text-xs font-bold text-slate-500 bg-white inline-block px-2 py-1 rounded">+ עמילן</p>
+                        </div>
+                        <div class="relative bg-white rounded-2xl p-3 shadow-md border border-slate-200">
+                            <svg viewBox="0 0 100 230" class="w-36 h-72 overflow-visible">
+                                <path d="M 10 10 L 90 10 L 60 50 L 60 100 L 40 100 L 40 50 Z" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" stroke-linejoin="round" />
+                                <g transform="translate(26, 14)">
+                                    <rect x="0" y="0" width="10" height="10" fill="#fde047" stroke="#b45309" stroke-width="1" rx="2"/><rect x="12" y="0" width="10" height="10" fill="#fde047" stroke="#b45309" stroke-width="1" rx="2"/><rect x="24" y="0" width="10" height="10" fill="#fde047" stroke="#b45309" stroke-width="1" rx="2"/><rect x="36" y="0" width="10" height="10" fill="#fde047" stroke="#b45309" stroke-width="1" rx="2"/>
+                                    <rect x="0" y="12" width="10" height="10" fill="#fde047" stroke="#b45309" stroke-width="1" rx="2"/><rect x="12" y="12" width="10" height="10" fill="#fde047" stroke="#b45309" stroke-width="1" rx="2"/><rect x="24" y="12" width="10" height="10" fill="#fde047" stroke="#b45309" stroke-width="1" rx="2"/><rect x="36" y="12" width="10" height="10" fill="#fde047" stroke="#b45309" stroke-width="1" rx="2"/>
+                                </g>
+                                <path d="M 15 15 L 85 15 L 60 45 L 40 45 Z" fill="#ffffff" opacity="0.8" />
+                                <path d="M 32 70 L 32 200 A 18 18 0 0 0 68 200 L 68 70" fill="none" stroke="#94a3b8" stroke-width="3" />
+                                <ellipse cx="50" cy="70" rx="18" ry="3" fill="none" stroke="#94a3b8" stroke-width="2" />
+                            </svg>
+                            <div class="mt-4 flex flex-col gap-2 items-center">
+                                <span class="text-xs bg-slate-100 text-slate-700 px-2 py-1.5 rounded w-full text-center font-medium border border-slate-200 shadow-sm transition-colors">מצב אבקה: יבשה</span>
+                                <span class="text-sm font-bold px-3 py-2 rounded-lg w-full text-center shadow-sm transition-colors duration-500 bg-slate-100 text-slate-500 border border-slate-200">0 ס"מ נוזל</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="results" class="tab-content space-y-8">
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <h3 class="text-xl font-bold mb-4 text-slate-800">טבלת סיכום שלב א'</h3>
+                    <p class="text-sm text-slate-600 mb-4">הזן את התצפיות והמדידות שלך מתוך הסימולציה לשלב א'.</p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-right border-collapse">
+                            <thead class="bg-slate-100 text-slate-700">
+                                <tr>
+                                    <th class="border p-2">מבחנה</th>
+                                    <th class="border p-2">מספר פרוסות</th>
+                                    <th class="border p-2">סוג אבקה</th>
+                                    <th class="border p-2">מצב אבקה (התחלה)</th>
+                                    <th class="border p-2">מצב אבקה (5 דק')</th>
+                                    <th class="border p-2">מצב אבקה (10 דק')</th>
+                                    <th class="border p-2">גובה נוזל (ס"מ)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="border p-2 font-bold bg-slate-50 text-center">1</td><td class="border p-2 bg-slate-50 text-center">32</td><td class="border p-2 bg-slate-50 text-center">סוכרוז</td>
+                                    <td class="border p-2"><input type="text" class="w-full p-1 border rounded bg-transparent" /></td><td class="border p-2"><input type="text" class="w-full p-1 border rounded bg-transparent" /></td><td class="border p-2"><input type="text" class="w-full p-1 border rounded bg-transparent" /></td><td class="border p-2"><input type="text" class="w-full p-1 border rounded bg-transparent" /></td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="border p-2 font-bold bg-slate-50 text-center">2</td><td class="border p-2 bg-slate-50 text-center">8</td><td class="border p-2 bg-slate-50 text-center">סוכרוז</td>
+                                    <td class="border p-2"><input type="text" class="w-full p-1 border rounded bg-transparent" /></td><td class="border p-2"><input type="text" class="w-full p-1 border rounded bg-transparent" /></td><td class="border p-2"><input type="text" class="w-full p-1 border rounded bg-transparent" /></td><td class="border p-2"><input type="text" class="w-full p-1 border rounded bg-transparent" /></td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="border p-2 font-bold bg-slate-50 text-center">3</td><td class="border p-2 bg-slate-50 text-center">8</td><td class="border p-2 bg-slate-50 text-center">עמילן</td>
+                                    <td class="border p-2"><input type="text" class="w-full p-1 border rounded bg-transparent" /></td><td class="border p-2"><input type="text" class="w-full p-1 border rounded bg-transparent" /></td><td class="border p-2"><input type="text" class="w-full p-1 border rounded bg-transparent" /></td><td class="border p-2"><input type="text" class="w-full p-1 border rounded bg-transparent" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <h3 class="text-xl font-bold mb-4 text-slate-800">טבלת סיכום שלב ב'</h3>
+                    <p class="text-sm text-slate-600 mb-4">חשב והזן את נפח הפרוסות ואת שיעור השינוי. (תוכל להיעזר בגרף ובסימולציה של שלב ב')</p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-right border-collapse">
+                            <thead class="bg-slate-100 text-slate-700">
+                                <tr>
+                                    <th class="border p-2">כוס</th>
+                                    <th class="border p-2">ריכוז סוכרוז (M)</th>
+                                    <th class="border p-2">נפח התחלתי (מ"מ)</th>
+                                    <th class="border p-2">נפח סופי (מ"מ)</th>
+                                    <th class="border p-2">שינוי בנפח (מ"מ)</th>
+                                    <th class="border p-2">שינוי יחסי (%)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="hover:bg-slate-50"><td class="border p-2 font-bold bg-slate-50 text-center">א</td><td class="border p-2 bg-slate-50 text-center">1.0</td><td class="border p-2"><input type="text" class="w-full p-1 border rounded bg-transparent" /></td><td class="border p-2"><input type="text" class="w-full p-1 border rounded bg-transparent" /></td><td class="border p-2"><input type="text" class="w-full p-1 border rounded bg-transparent" /></td><td class="border p-2"><input type="text" class="w-full p-1 border rounded bg-transparent" /></td></tr>
+                                <tr class="hover:bg-slate-50"><td class="border p-2 font-bold bg-slate-50 text-center">ב</td><td class="border p-2 bg-slate-50 text-center">0.5</td><td class="border p-2"><input type="text" class="w-full p-1 border rounded bg-transparent" /></td><td class="border p-2"><input type="text" class="w-full p-1 border rounded bg-transparent" /></td><td class="border p-2"><input type="text" class="w-full p-1 border rounded bg-transparent" /></td><td class="border p-2"><input type="text" class="w-full p-1 border rounded bg-transparent" /></td></tr>
+                                <tr class="hover:bg-slate-50"><td class="border p-2 font-bold bg-slate-50 text-center">ג</td><td class="border p-2 bg-slate-50 text-center">0.25</td><td class="border p-2"><input type="text" class="w-full p-1 border rounded bg-transparent" /></td><td class="border p-2"><input type="text" class="w-full p-1 border rounded bg-transparent" /></td><td class="border p-2"><input type="text" class="w-full p-1 border rounded bg-transparent" /></td><td class="border p-2"><input type="text" class="w-full p-1 border rounded bg-transparent" /></td></tr>
+                                <tr class="hover:bg-slate-50"><td class="border p-2 font-bold bg-slate-50 text-center">ד</td><td class="border p-2 bg-slate-50 text-center">0.0</td><td class="border p-2"><input type="text" class="w-full p-1 border rounded bg-transparent" /></td><td class="border p-2"><input type="text" class="w-full p-1 border rounded bg-transparent" /></td><td class="border p-2"><input type="text" class="w-full p-1 border rounded bg-transparent" /></td><td class="border p-2"><input type="text" class="w-full p-1 border rounded bg-transparent" /></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="partB" class="tab-content bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h2 class="text-2xl font-bold mb-4 flex items-center text-slate-800">
+                    <i class="fa-solid fa-chart-area ml-2 text-purple-600"></i> השפעת ריכוז תמיסת סוכרוז על נפח פרוסות תפוח אדמה
+                </h2>
+                <p class="text-slate-600 mb-6 text-sm">
+                    הזז את המחוון, או הזן ערך מדויק כדי לקבוע את ריכוז תמיסת הסוכרוז. צפה כיצד הריכוז משפיע על שינוי נפח הפרוסות בגרף ועל תא הצמח ברמה המיקרוסקופית.
+                </p>
+                
+                <div class="mb-6 p-6 bg-white rounded-xl shadow-inner border border-slate-100">
+                    <div class="relative w-full h-8 text-sm font-bold text-slate-500 mb-2" dir="ltr">
+                        <span class="absolute top-0 -translate-x-1/2 text-center whitespace-nowrap" style="left: 0%;">0M</span>
+                        <span class="absolute top-0 -translate-x-1/2 text-center" style="left: 25%;">0.25M</span>
+                        <span class="absolute top-0 -translate-x-1/2 text-center" style="left: 50%;">0.5M</span>
+                        <span class="absolute top-0 -translate-x-1/2 text-center" style="left: 100%;">1.0M</span>
+                    </div>
+                    <input 
+                        type="range" min="0" max="1" step="0.01" value="0.5" id="concSlider"
+                        oninput="updateConcentration(this.value)"
+                        class="w-full h-3 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-purple-600 focus:outline-none block text-purple-600"
+                        dir="ltr"
+                    />
+                    
+                    <div class="flex items-center justify-center mt-8 gap-3 bg-purple-50 p-3 rounded-lg border border-purple-100">
+                        <label class="text-slate-700 font-semibold text-sm">הזן/קרא ריכוז נוכחי (M):</label>
+                        <input 
+                            type="number" min="0" max="1" step="0.01" value="0.50" id="concInput"
+                            oninput="updateConcentration(this.value)"
+                            class="w-24 text-center p-1 border border-purple-300 rounded font-mono text-purple-700 font-bold focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            dir="ltr"
+                        />
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Cell Animation -->
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col items-center justify-center">
+                        <h3 class="font-bold text-slate-800 mb-4 text-center text-lg">מבט מיקרוסקופי: תא צמח</h3>
+                        
+                        <div class="relative w-full max-w-[300px] h-56 bg-slate-50 rounded-xl flex items-center justify-center overflow-visible border border-slate-200 shadow-inner">
+                            <svg viewBox="0 0 200 150" class="w-full h-full p-2" style="overflow: visible;">
+                                <!-- Cell Wall (Rigid) -->
+                                <rect x="15" y="15" width="170" height="120" rx="4" fill="#f0fdf4" stroke="#16a34a" stroke-width="8" />
+                                <text x="100" y="10" font-size="12" fill="#16a34a" font-weight="bold" text-anchor="middle">דופן</text>
+                                
+                                <!-- Inner Membrane Group -->
+                                <g id="cell-membrane" style="transform: scale(1); transform-origin: center; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);">
+                                    <rect x="19" y="19" width="162" height="112" rx="2" fill="#dcfce7" stroke="#22c55e" stroke-width="3" />
+                                    <text x="100" y="30" font-size="11" fill="#15803d" font-weight="bold" text-anchor="middle">קרום תא</text>
+                                    
+                                    <!-- Vacuole -->
+                                    <rect id="vacuole" x="50" y="35" width="100" height="80" rx="10" fill="#bae6fd" stroke="#7dd3fc" stroke-width="2" style="transform: scale(1); transform-origin: center; transition: transform 0.6s;" />
+                                    <text id="vacuole-text" x="100" y="79" font-size="12" fill="#0369a1" font-weight="bold" text-anchor="middle">חלולית</text>
+                                    
+                                    <!-- Nucleus -->
+                                    <circle id="nucleus" cx="35" cy="75" r="12" fill="#fbbf24" stroke="#d97706" stroke-width="1" />
+                                    <text id="nucleus-text" x="35" y="58" font-size="10" fill="#b45309" font-weight="bold" text-anchor="middle">גרעין</text>
+                                </g>
+
+                                <!-- Arrows -->
+                                <g id="arrows-in" class="animate-pulse" style="display:none;">
+                                    <path d="M 0 75 L 20 75" stroke="#3b82f6" stroke-width="3" marker-end="url(#arrow)" />
+                                    <path d="M 200 75 L 180 75" stroke="#3b82f6" stroke-width="3" marker-end="url(#arrow)" />
+                                    <text x="100" y="148" font-size="10" fill="#3b82f6" text-anchor="middle" font-weight="bold">כניסת מים לתא (אוסמוזה)</text>
+                                </g>
+                                <g id="arrows-out" class="animate-pulse" style="display:block;">
+                                    <path d="M 20 75 L 0 75" stroke="#ef4444" stroke-width="3" marker-end="url(#arrow-out)" />
+                                    <path d="M 180 75 L 200 75" stroke="#ef4444" stroke-width="3" marker-end="url(#arrow-out)" />
+                                    <text x="100" y="148" font-size="10" fill="#ef4444" text-anchor="middle" font-weight="bold">יציאת מים מהתא (פלזמוליזה)</text>
+                                </g>
+                                <text id="text-iso" x="100" y="148" font-size="10" fill="#64748b" text-anchor="middle" font-weight="bold" style="display:none;">מצב איזוטוני (שיווי משקל)</text>
+
+                                <defs>
+                                    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#3b82f6" />
+                                    </marker>
+                                    <marker id="arrow-out" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#ef4444" />
+                                    </marker>
+                                </defs>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Graph -->
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col items-center">
+                        <h3 class="font-bold text-slate-800 mb-2 text-center text-lg">עקומת כיול: שינוי יחסי בנפח</h3>
+                        <div class="w-full h-64 relative" dir="ltr">
+                            <canvas id="myChart"></canvas>
+                        </div>
+                        <p class="text-sm font-semibold text-slate-600 mt-2">
+                            בריכוז <span id="concText" class="text-purple-600" dir="ltr">0.50M</span> השינוי בנפח הוא <span id="changeText" class="text-pink-600" dir="ltr">-7.0%</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="questions" class="tab-content bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold flex items-center text-slate-800">
+                    <i class="fa-solid fa-circle-question ml-2 text-indigo-600"></i> שאלות חקר
+                </h2>
+                <button onclick="downloadAnswers()" class="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-sm font-bold shadow">
+                    <i class="fa-solid fa-download"></i> הורד קובץ תשובות (Word)
+                </button>
+            </div>
+            
+            <p class="text-slate-600 mb-6 text-sm">
+                    ענה על השאלות הבאות בהתבסס על התוצאות מהסימולציה. לחץ על כפתור ההכוונה לקבלת רמז. מומלץ למלא קודם את הטבלאות.
+                </p>
+
+                <div class="space-y-4" id="questionsContainer">
+                    
+                    <!-- New Q: A -->
+                    <div class="border border-slate-200 rounded-lg overflow-hidden">
+                        <button onclick="toggleQ('q_a')" class="w-full text-right p-4 bg-slate-50 hover:bg-slate-100 font-semibold text-slate-800 flex justify-between items-center">
+                            <span>א. מה היה המשתנה המשפיע (המשתנה הבלתי תלוי)?</span>
+                            <i id="icon-q_a" class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div id="body-q_a" class="p-4 bg-white space-y-4 hidden">
+                            <textarea id="ans-q_a" class="w-full h-32 p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:outline-none resize-none" placeholder="הקלד את תשובתך כאן..."></textarea>
+                            <button onclick="toggleHint('q_a')" class="text-sm bg-purple-100 text-purple-700 px-3 py-1.5 rounded-md hover:bg-purple-200 transition-colors font-medium"><i class="fa-solid fa-robot ml-1"></i> הכוונה מ-AI</button>
+                            <div id="hint-q_a" class="hidden p-3 bg-purple-50 border border-purple-100 rounded-md text-purple-800 text-sm mt-2">המשתנה שאתם כחוקרים קבעתם ושיניתם מראש בניסוי.</div>
+                        </div>
+                    </div>
+
+                    <!-- New Q: B -->
+                    <div class="border border-slate-200 rounded-lg overflow-hidden">
+                        <button onclick="toggleQ('q_b')" class="w-full text-right p-4 bg-slate-50 hover:bg-slate-100 font-semibold text-slate-800 flex justify-between items-center">
+                            <span>ב. כיצד שינתם את המשתנה הבלתי תלוי?</span>
+                            <i id="icon-q_b" class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div id="body-q_b" class="p-4 bg-white space-y-4 hidden">
+                            <textarea id="ans-q_b" class="w-full h-32 p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:outline-none resize-none" placeholder="הקלד את תשובתך כאן..."></textarea>
+                            <button onclick="toggleHint('q_b')" class="text-sm bg-purple-100 text-purple-700 px-3 py-1.5 rounded-md hover:bg-purple-200 transition-colors font-medium"><i class="fa-solid fa-robot ml-1"></i> הכוונה מ-AI</button>
+                            <div id="hint-q_b" class="hidden p-3 bg-purple-50 border border-purple-100 rounded-md text-purple-800 text-sm mt-2">הסתכלו על הטבלאות. מה ההבדל בין הכוסות או המבחנות השונות שהכנתם? אילו טיפולים שונים יש?</div>
+                        </div>
+                    </div>
+
+                    <!-- New Q: C -->
+                    <div class="border border-slate-200 rounded-lg overflow-hidden">
+                        <button onclick="toggleQ('q_c')" class="w-full text-right p-4 bg-slate-50 hover:bg-slate-100 font-semibold text-slate-800 flex justify-between items-center">
+                            <span>ג. מה היה המשתנה המושפע (המשתנה התלוי)?</span>
+                            <i id="icon-q_c" class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div id="body-q_c" class="p-4 bg-white space-y-4 hidden">
+                            <textarea id="ans-q_c" class="w-full h-32 p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:outline-none resize-none" placeholder="הקלד את תשובתך כאן..."></textarea>
+                            <button onclick="toggleHint('q_c')" class="text-sm bg-purple-100 text-purple-700 px-3 py-1.5 rounded-md hover:bg-purple-200 transition-colors font-medium"><i class="fa-solid fa-robot ml-1"></i> הכוונה מ-AI</button>
+                            <div id="hint-q_c" class="hidden p-3 bg-purple-50 border border-purple-100 rounded-md text-purple-800 text-sm mt-2">המדד הביולוגי שהשתנה כתוצאה מהטיפולים שביצענו (מה קרה לתפוח האדמה).</div>
+                        </div>
+                    </div>
+
+                    <!-- New Q: D -->
+                    <div class="border border-slate-200 rounded-lg overflow-hidden">
+                        <button onclick="toggleQ('q_d')" class="w-full text-right p-4 bg-slate-50 hover:bg-slate-100 font-semibold text-slate-800 flex justify-between items-center">
+                            <span>ד. כיצד מדדתם את המשתנה התלוי?</span>
+                            <i id="icon-q_d" class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div id="body-q_d" class="p-4 bg-white space-y-4 hidden">
+                            <textarea id="ans-q_d" class="w-full h-32 p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:outline-none resize-none" placeholder="הקלד את תשובתך כאן..."></textarea>
+                            <button onclick="toggleHint('q_d')" class="text-sm bg-purple-100 text-purple-700 px-3 py-1.5 rounded-md hover:bg-purple-200 transition-colors font-medium"><i class="fa-solid fa-robot ml-1"></i> הכוונה מ-AI</button>
+                            <div id="hint-q_d" class="hidden p-3 bg-purple-50 border border-purple-100 rounded-md text-purple-800 text-sm mt-2">באילו כלי מדידה ובאילו שיטות (למשל סרגל, משורה) השתמשנו כדי לאסוף את הנתונים בסוף התהליך?</div>
+                        </div>
+                    </div>
+
+                    <!-- New Q: E -->
+                    <div class="border border-slate-200 rounded-lg overflow-hidden">
+                        <button onclick="toggleQ('q_e')" class="w-full text-right p-4 bg-slate-50 hover:bg-slate-100 font-semibold text-slate-800 flex justify-between items-center">
+                            <span>ה. אלו קבועים נשמרו בניסוי ומדוע?</span>
+                            <i id="icon-q_e" class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div id="body-q_e" class="p-4 bg-white space-y-4 hidden">
+                            <textarea id="ans-q_e" class="w-full h-32 p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:outline-none resize-none" placeholder="הקלד את תשובתך כאן..."></textarea>
+                            <button onclick="toggleHint('q_e')" class="text-sm bg-purple-100 text-purple-700 px-3 py-1.5 rounded-md hover:bg-purple-200 transition-colors font-medium"><i class="fa-solid fa-robot ml-1"></i> הכוונה מ-AI</button>
+                            <div id="hint-q_e" class="hidden p-3 bg-purple-50 border border-purple-100 rounded-md text-purple-800 text-sm mt-2">חשבו על תנאים כמו סוג תפוח האדמה, טמפרטורת החדר, זמן ההמתנה. מדוע חשוב שלא נשנה גם אותם?</div>
+                        </div>
+                    </div>
+
+                    <!-- Q23 -->
+                    <div class="border border-slate-200 rounded-lg overflow-hidden mt-8">
+                        <button onclick="toggleQ('q23')" class="w-full text-right p-4 bg-slate-50 hover:bg-slate-100 font-semibold text-slate-800 flex justify-between items-center">
+                            <span>23. הסבר את התהליך שהתרחש בפרוסות תפוח-האדמה בהשפעת סוכרוז במהלך הניסוי, ומדוע יש הבדל בין סוכרוז לעמילן?</span>
+                            <i id="icon-q23" class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div id="body-q23" class="p-4 bg-white space-y-4 hidden">
+                            <textarea id="ans-q23" class="w-full h-32 p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:outline-none resize-none" placeholder="הקלד את תשובתך כאן..."></textarea>
+                            <button onclick="toggleHint('q23')" class="text-sm bg-purple-100 text-purple-700 px-3 py-1.5 rounded-md hover:bg-purple-200 transition-colors font-medium"><i class="fa-solid fa-robot ml-1"></i> הכוונה מ-AI</button>
+                            <div id="hint-q23" class="hidden p-3 bg-purple-50 border border-purple-100 rounded-md text-purple-800 text-sm mt-2">חשוב על מסיסות. סוכרוז מתמוסס במים ויוצר תמיסה היפרטונית. מה קורה למים בתוך התא כשהסביבה היפרטונית? ולעומת זאת, האם עמילן מסיס?</div>
+                        </div>
+                    </div>
+                    <!-- Q24 -->
+                    <div class="border border-slate-200 rounded-lg overflow-hidden">
+                        <button onclick="toggleQ('q24')" class="w-full text-right p-4 bg-slate-50 hover:bg-slate-100 font-semibold text-slate-800 flex justify-between items-center">
+                            <span>24. הסבר את השפעת החיתוך של הפרוסות לחלקים קטנים (32 חתיכות לעומת 8) על התהליך.</span><i id="icon-q24" class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div id="body-q24" class="p-4 bg-white space-y-4 hidden">
+                            <textarea id="ans-q24" class="w-full h-32 p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:outline-none resize-none" placeholder="הקלד את תשובתך כאן..."></textarea>
+                            <button onclick="toggleHint('q24')" class="text-sm bg-purple-100 text-purple-700 px-3 py-1.5 rounded-md hover:bg-purple-200 transition-colors font-medium"><i class="fa-solid fa-robot ml-1"></i> הכוונה מ-AI</button>
+                            <div id="hint-q24" class="hidden p-3 bg-purple-50 border border-purple-100 rounded-md text-purple-800 text-sm mt-2">מושג מפתח: שטח פנים לנפח. ככל שיש יותר חיתוכים, מה קורה לשטח המגע של התאים עם הסביבה?</div>
+                        </div>
+                    </div>
+                    <!-- Q25 -->
+                    <div class="border border-slate-200 rounded-lg overflow-hidden">
+                        <button onclick="toggleQ('q25')" class="w-full text-right p-4 bg-slate-50 hover:bg-slate-100 font-semibold text-slate-800 flex justify-between items-center">
+                            <span>25. ערכו ניסוי דומה, בחדר שבו הטמפרטורה הייתה 5°C. שער מה תהיה ההשפעה של טמפרטורה זו על תוצאות הניסוי.</span><i id="icon-q25" class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div id="body-q25" class="p-4 bg-white space-y-4 hidden">
+                            <textarea id="ans-q25" class="w-full h-32 p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:outline-none resize-none" placeholder="הקלד את תשובתך כאן..."></textarea>
+                            <button onclick="toggleHint('q25')" class="text-sm bg-purple-100 text-purple-700 px-3 py-1.5 rounded-md hover:bg-purple-200 transition-colors font-medium"><i class="fa-solid fa-robot ml-1"></i> הכוונה מ-AI</button>
+                            <div id="hint-q25" class="hidden p-3 bg-purple-50 border border-purple-100 rounded-md text-purple-800 text-sm mt-2">איך טמפרטורה משפיעה על אנרגיה קינטית ותנועת מולקולות? איך זה ישפיע על קצב האוסמוזה והתמוססות הסוכר?</div>
+                        </div>
+                    </div>
+                    <!-- Q39 -->
+                    <div class="border border-slate-200 rounded-lg overflow-hidden">
+                        <button onclick="toggleQ('q39')" class="w-full text-right p-4 bg-slate-50 hover:bg-slate-100 font-semibold text-slate-800 flex justify-between items-center">
+                            <span>39. מצא מהו ריכוז תמיסת הסוכרוז שבה אין שינוי בנפח הפרוסות (0% שינוי) והסבר מה משמעות תוצאה זו. בנוסף מהו ריכוז המומסים שהוא היפרטוני לתאי תפוח האדמה ומה ריכוז המומסים שהוא היפוטוני לתאי תפוח האדמה?</span><i id="icon-q39" class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div id="body-q39" class="p-4 bg-white space-y-4 hidden">
+                            <textarea id="ans-q39" class="w-full h-32 p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:outline-none resize-none" placeholder="הקלד את תשובתך כאן..."></textarea>
+                            <button onclick="toggleHint('q39')" class="text-sm bg-purple-100 text-purple-700 px-3 py-1.5 rounded-md hover:bg-purple-200 transition-colors font-medium"><i class="fa-solid fa-robot ml-1"></i> הכוונה מ-AI</button>
+                            <div id="hint-q39" class="hidden p-3 bg-purple-50 border border-purple-100 rounded-md text-purple-800 text-sm mt-2">הסתכל בגרף בו הקו חותך את ציר ה-X. מה זה אומר על ריכוז המומסים מחוץ לתא לעומת בתוך התא כאשר אין שינוי בנפח?</div>
+                        </div>
+                    </div>
+                    <!-- Q40 -->
+                    <div class="border border-slate-200 rounded-lg overflow-hidden">
+                        <button onclick="toggleQ('q40')" class="w-full text-right p-4 bg-slate-50 hover:bg-slate-100 font-semibold text-slate-800 flex justify-between items-center">
+                            <span>40. בניסוי שביצעת כל פרוסות תפוח-האדמה היו מאותה פקעת. הסבר מדוע חשוב להקפיד על כך.</span><i id="icon-q40" class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div id="body-q40" class="p-4 bg-white space-y-4 hidden">
+                            <textarea id="ans-q40" class="w-full h-32 p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:outline-none resize-none" placeholder="הקלד את תשובתך כאן..."></textarea>
+                            <button onclick="toggleHint('q40')" class="text-sm bg-purple-100 text-purple-700 px-3 py-1.5 rounded-md hover:bg-purple-200 transition-colors font-medium"><i class="fa-solid fa-robot ml-1"></i> הכוונה מ-AI</button>
+                            <div id="hint-q40" class="hidden p-3 bg-purple-50 border border-purple-100 rounded-md text-purple-800 text-sm mt-2">חשוב על הבדלים בין פקעות שונות. האם תכולת המים או ריכוז המומסים (לחץ טורגור) זהים בכל תפוח אדמה?</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="conclusions" class="tab-content grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-blue-50 p-6 rounded-xl border border-blue-100 shadow-sm">
+                    <h3 class="font-bold text-blue-800 text-lg mb-3">אוסמוזה והפרשי ריכוזים</h3>
+                    <p class="text-blue-900 text-sm leading-relaxed mb-3">
+                    כאשר ריכוז התמיסה החיצונית (סוכרוז) <strong>גבוה</strong> מריכוז המומסים בתא (סביבה היפרטונית), מים יוצאים מהתא באוסמוזה וחלה <strong>פלזמוליזה</strong> - ירידה בנפח וירידה בלחץ הטורגור.
+                    </p>
+                    <p class="text-blue-900 text-sm leading-relaxed">
+                    כאשר ריכוז התמיסה החיצונית <strong>נמוך</strong> מהתא (מים מזוקקים), התא קולט מים, הנפח עולה עד שהדופן מונעת כניסה נוספת (טורגור מלא). נקודת האפס בגרף מציינת <strong>סביבה איזוטונית</strong>.
+                    </p>
+                </div>
+
+                <div class="bg-emerald-50 p-6 rounded-xl border border-emerald-100 shadow-sm">
+                    <h3 class="font-bold text-emerald-800 text-lg mb-3">שטח פנים, חומרים וטמפרטורה</h3>
+                    <ul class="list-disc list-inside text-emerald-900 text-sm space-y-2">
+                    <li><strong>שטח פנים לנפח:</strong> ככל שחתכנו ליותר חתיכות, הגדלנו את שטח הפנים, מה שהוביל ליציאת נוזלים רבה ומהירה יותר (יותר תאים פצועים ובמגע עם הסוכר).</li>
+                    <li><strong>מסיסות:</strong> סוכרוז מתמוסס ויוצר מפל ריכוזים. עמילן אינו מסיס ולכן לא יוצר תמיסה ולא גורם לאוסמוזה.</li>
+                    <li><strong>טמפרטורה:</strong> טמפרטורה נמוכה מאיטה את תנועת המולקולות (אנרגיה קינטית), ולכן קצב האוסמוזה והתמוססות הסוכר יהיו איטיים יותר.</li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('bg-white', 'text-blue-700', 'border-b-2', 'border-blue-700', 'shadow-sm');
+                el.classList.add('text-slate-500');
+            });
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.remove('text-slate-500');
+            activeBtn.classList.add('bg-white', 'text-blue-700', 'border-b-2', 'border-blue-700', 'shadow-sm');
+        }
+
+        let partATime = 0;
+        let isTimerRunning = false;
+        let timerInterval = null;
+
+        function updatePartAUI() {
+            document.getElementById('timerDisplay').innerText = `00:${partATime.toString().padStart(2, '0')}`;
+            document.getElementById('timeSlider').value = partATime;
+            document.getElementById('timeLabel').innerText = `${partATime} דקות`;
+            
+            // Tube 1
+            const fluid1 = (partATime / 10) * 70;
+            const fluidY1 = 200 - fluid1;
+            document.getElementById('tube1-fluid').style.display = fluid1 > 0 ? 'block' : 'none';
+            document.getElementById('tube1-surface').style.display = fluid1 > 0 ? 'block' : 'none';
+            if (fluid1 > 0) {
+                document.getElementById('tube1-fluid').setAttribute('d', `M 33.5 200 A 16.5 16.5 0 0 0 66.5 200 L 66.5 ${fluidY1} L 33.5 ${fluidY1} Z`);
+                document.getElementById('tube1-surface').setAttribute('cy', fluidY1);
+            }
+            document.getElementById('tube1-powder').setAttribute('opacity', Math.max(0, 0.85 - (partATime/10)));
+            let pStatus1 = partATime === 0 ? "יבשה / לחה" : (partATime < 5 ? "לחה" : (partATime < 10 ? "לחה / התמוססה" : "התמוססה כולה"));
+            document.getElementById('tube1-status').innerText = 'מצב אבקה: ' + pStatus1;
+            document.getElementById('tube1-fluid-label').innerText = fluid1 > 0 ? (partATime / 10 * 2.5).toFixed(1) + ' ס"מ נוזל' : '0 ס"מ נוזל';
+            document.getElementById('tube1-fluid-label').className = fluid1 > 0 ? "text-sm font-bold px-3 py-2 rounded-lg w-full text-center shadow-sm transition-colors duration-500 bg-blue-100 text-blue-700 border border-blue-200" : "text-sm font-bold px-3 py-2 rounded-lg w-full text-center shadow-sm transition-colors duration-500 bg-slate-100 text-slate-500 border border-slate-200";
+            document.getElementById('tube1-drop').style.display = (isTimerRunning && partATime < 10) ? 'block' : 'none';
+
+            // Tube 2
+            const fluid2 = (partATime / 10) * 55;
+            const fluidY2 = 200 - fluid2;
+            document.getElementById('tube2-fluid').style.display = fluid2 > 0 ? 'block' : 'none';
+            document.getElementById('tube2-surface').style.display = fluid2 > 0 ? 'block' : 'none';
+            if (fluid2 > 0) {
+                document.getElementById('tube2-fluid').setAttribute('d', `M 33.5 200 A 16.5 16.5 0 0 0 66.5 200 L 66.5 ${fluidY2} L 33.5 ${fluidY2} Z`);
+                document.getElementById('tube2-surface').setAttribute('cy', fluidY2);
+            }
+            document.getElementById('tube2-powder').setAttribute('opacity', Math.max(0, 0.85 - (partATime/10)));
+            let pStatus2 = partATime === 0 ? "יבשה / לחה" : (partATime < 8 ? "לחה" : "לחה / התמוססה חלקה");
+            document.getElementById('tube2-status').innerText = 'מצב אבקה: ' + pStatus2;
+            document.getElementById('tube2-fluid-label').innerText = fluid2 > 0 ? (partATime / 10 * 2.0).toFixed(1) + ' ס"מ נוזל' : '0 ס"מ נוזל';
+            document.getElementById('tube2-fluid-label').className = fluid2 > 0 ? "text-sm font-bold px-3 py-2 rounded-lg w-full text-center shadow-sm transition-colors duration-500 bg-blue-100 text-blue-700 border border-blue-200" : "text-sm font-bold px-3 py-2 rounded-lg w-full text-center shadow-sm transition-colors duration-500 bg-slate-100 text-slate-500 border border-slate-200";
+            document.getElementById('tube2-drop').style.display = (isTimerRunning && partATime < 10) ? 'block' : 'none';
+        }
+
+        function startTimer() {
+            if (isTimerRunning || partATime >= 10) return;
+            isTimerRunning = true;
+            updatePartAUI();
+            timerInterval = setInterval(() => {
+                if (partATime >= 10) {
+                    pauseTimer();
+                } else {
+                    partATime++;
+                    updatePartAUI();
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            isTimerRunning = false;
+            clearInterval(timerInterval);
+            updatePartAUI();
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            partATime = 0;
+            updatePartAUI();
+        }
+
+        function handleTimeSlider(val) {
+            pauseTimer();
+            partATime = parseInt(val);
+            updatePartAUI();
+        }
+
+        let concentration = 0.5;
+        let myChart;
+
+        const calibrationData = [
+            { x: 0, y: 9 }, { x: 0.1, y: 6.2 }, { x: 0.2, y: 3.4 }, { x: 0.25, y: 2 },
+            { x: 0.3, y: 0 }, { x: 0.4, y: -3.5 }, { x: 0.5, y: -7 }, { x: 0.6, y: -9.8 },
+            { x: 0.7, y: -12.6 }, { x: 0.8, y: -15.4 }, { x: 0.9, y: -18.2 }, { x: 1.0, y: -21 }
+        ];
+
+        function calculateChange(conc) {
+            if (conc <= 0.25) return 9 - (conc / 0.25) * 7; 
+            if (conc <= 0.3) return 2 - ((conc - 0.25) / 0.05) * 2;
+            if (conc <= 0.5) return 0 - ((conc - 0.3) / 0.2) * 7;
+            return -7 - ((conc - 0.5) / 0.5) * 14;
+        }
+
+        function updatePartBUI() {
+            const currentChange = calculateChange(concentration);
+            const membraneScale = 1 + (currentChange / 100);
+            
+            document.getElementById('concSlider').value = concentration;
+            document.getElementById('concInput').value = concentration.toFixed(2);
+            document.getElementById('concText').innerText = concentration.toFixed(2) + 'M';
+            document.getElementById('changeText').innerText = currentChange.toFixed(1) + '%';
+            
+            // Cell Animation
+            document.getElementById('cell-membrane').style.transform = `scale(${Math.max(0.5, Math.min(1.0, membraneScale))})`;
+            document.getElementById('vacuole').style.transform = `scale(${Math.max(0.4, membraneScale)})`;
+            
+            document.getElementById('arrows-in').style.display = currentChange > 1 ? 'block' : 'none';
+            document.getElementById('arrows-out').style.display = currentChange < -1 ? 'block' : 'none';
+            document.getElementById('text-iso').style.display = Math.abs(currentChange) <= 1 ? 'block' : 'none';
+
+            // Chart Update
+            if(myChart) {
+                myChart.data.datasets[1].data = [{x: concentration, y: currentChange}];
+                myChart.update();
+            }
+        }
+
+        function updateConcentration(val) {
+            let parsed = parseFloat(val);
+            if (!isNaN(parsed) && parsed >= 0 && parsed <= 1) {
+                concentration = parsed;
+                updatePartBUI();
+            }
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('myChart').getContext('2d');
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [
+                        {
+                            label: 'שינוי בנפח (%)',
+                            data: calibrationData,
+                            borderColor: '#8b5cf6',
+                            backgroundColor: '#8b5cf6',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            pointRadius: 0,
+                            fill: false
+                        },
+                        {
+                            label: 'ריכוז נוכחי',
+                            data: [{x: concentration, y: calculateChange(concentration)}],
+                            backgroundColor: '#ec4899',
+                            borderColor: '#fff',
+                            borderWidth: 2,
+                            pointRadius: 6,
+                            type: 'scatter'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    onClick: (e) => {
+                        const canvasPosition = Chart.helpers.getRelativePosition(e, myChart);
+                        const dataX = myChart.scales.x.getValueForPixel(canvasPosition.x);
+                        if(dataX >= 0 && dataX <= 1) {
+                            updateConcentration(dataX);
+                        }
+                    },
+                    scales: {
+                        x: { 
+                            type: 'linear', 
+                            position: 'bottom', 
+                            min: 0, max: 1,
+                            title: { display: true, text: 'ריכוז סוכרוז (M)' }
+                        },
+                        y: { 
+                            title: { display: true, text: 'שינוי בנפח (%)' },
+                            min: -30, max: 15,
+                            grid: { color: (ctx) => ctx.tick.value === 0 ? '#94a3b8' : '#e2e8f0', lineWidth: (ctx) => ctx.tick.value === 0 ? 2 : 1 }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    if(context.datasetIndex === 1) return `ריכוז: ${context.parsed.x.toFixed(2)}M, שינוי: ${context.parsed.y.toFixed(1)}%`;
+                                    return `שינוי: ${context.parsed.y.toFixed(1)}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function toggleQ(qId) {
+            const body = document.getElementById('body-' + qId);
+            const icon = document.getElementById('icon-' + qId);
+            if (body.classList.contains('hidden')) {
+                body.classList.remove('hidden');
+                icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+            } else {
+                body.classList.add('hidden');
+                icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
+            }
+        }
+
+        function toggleHint(qId) {
+            const hint = document.getElementById('hint-' + qId);
+            hint.classList.toggle('hidden');
+        }
+
+        function downloadAnswers() {
+            // Build an HTML structure that MS Word can interpret properly
+            let htmlContent = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' dir='rtl'>
+                <head>
+                    <meta charset='utf-8'>
+                    <title>תשובות למעבדה</title>
+                    <style>
+                        body { font-family: 'Arial', sans-serif; direction: rtl; text-align: right; }
+                        h1 { color: #1d4ed8; text-align: center; }
+                        h2 { color: #334155; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px; }
+                        table { border-collapse: collapse; width: 100%; margin-bottom: 30px; }
+                        th, td { border: 1px solid #94a3b8; padding: 8px; text-align: center; }
+                        th { background-color: #f1f5f9; font-weight: bold; }
+                        .question { font-weight: bold; color: #1e293b; margin-top: 20px; font-size: 14pt; }
+                        .answer { margin-bottom: 25px; color: #0f172a; white-space: pre-wrap; background-color: #f8fafc; padding: 10px; border: 1px solid #cbd5e1; min-height: 40px; }
+                    </style>
+                </head>
+                <body>
+                    <h1>תשובות למעבדת אוסמוזה</h1>
+            `;
+
+            // --- 1. Extract and process Tables ---
+            htmlContent += `<h2>טבלאות ותוצאות</h2>`;
+            
+            // Clone the results div to manipulate it safely
+            let resultsClone = document.getElementById('results').cloneNode(true);
+            
+            // Replace all input fields in the clone with their actual text values
+            let originalInputs = document.getElementById('results').querySelectorAll('input');
+            let clonedInputs = resultsClone.querySelectorAll('input');
+            
+            for (let i = 0; i < originalInputs.length; i++) {
+                let val = originalInputs[i].value || '----';
+                let textNode = document.createTextNode(val);
+                clonedInputs[i].parentNode.replaceChild(textNode, clonedInputs[i]);
+            }
+            
+            // Append tables to HTML
+            let tables = resultsClone.querySelectorAll('table');
+            let tableTitles = resultsClone.querySelectorAll('h3');
+            
+            for (let i = 0; i < tables.length; i++) {
+                if(tableTitles[i]) {
+                    htmlContent += `<h3>${tableTitles[i].innerText}</h3>`;
+                }
+                htmlContent += tables[i].outerHTML;
+                htmlContent += `<br/>`;
+            }
+
+            // --- 2. Extract Questions and Answers ---
+            htmlContent += `<h2>שאלות ותשובות</h2>`;
+            
+            const qIds = ['q_a', 'q_b', 'q_c', 'q_d', 'q_e', 'q23', 'q24', 'q25', 'q39', 'q40'];
+            
+            qIds.forEach(id => {
+                let qElement = document.querySelector(`button[onclick="toggleQ('${id}')"] span`);
+                if (qElement) {
+                    let qText = qElement.innerText;
+                    let aText = document.getElementById(`ans-${id}`).value || '';
+                    
+                    htmlContent += `<div class="question">${qText}</div>`;
+                    htmlContent += `<div class="answer">${aText}</div>`;
+                }
+            });
+
+            htmlContent += `
+                </body>
+                </html>
+            `;
+
+            // Create a Blob with Word application MIME type, prefixing with BOM for UTF-8 Hebrew
+            const blob = new Blob(['\ufeff', htmlContent], {
+                type: 'application/msword'
+            });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'Osmosis_Lab_Answers.doc'; // Word Document Extension
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Initialization
+        window.onload = function() {
+            updatePartAUI();
+            initChart();
+            updatePartBUI();
+        };
+    </script>
+</body>
+</html>
